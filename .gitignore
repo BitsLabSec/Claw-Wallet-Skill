@@ -1,0 +1,18 @@
+# protected wallet state — never commit or remove
+.env.clay
+identity.json
+share3.json
+policy.json
+sandbox.log
+sandbox.pid
+audit.jsonl
+daily_tracker.json
+security_cache.json
+
+# runtime artifacts
+clay-sandbox
+clay-sandbox.exe
+
+sandbox.log
+*.download
+

@@ -1,0 +1,70 @@
+# claw wallet minimal installer for Windows (PowerShell)
+# Usage: first-time install (wallet init) | upgrade (CLAW_WALLET_SKIP_INIT=1, no wallet init)
+$ErrorActionPreference = "Stop"
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location -Path $ScriptDir
+
+$BinaryUrl = "https://github.com/ClawWallet/Claw_Wallet_Bin/raw/refs/heads/main/bin/clay-sandbox-windows-amd64.exe"
+$BinaryTarget = Join-Path $ScriptDir "clay-sandbox.exe"
+
+# --- Common: stop, download, start ---
+$SkipStop = $env:CLAW_WALLET_SKIP_STOP -eq "1"
+if (-not $SkipStop) {
+    & (Join-Path $ScriptDir "claw-wallet.ps1") stop *> $null
+}
+
+Write-Host "Downloading sandbox binary from $BinaryUrl ..."
+$TempBinary = "$BinaryTarget.download"
+Invoke-WebRequest -Uri $BinaryUrl -OutFile $TempBinary
+Move-Item -Path $TempBinary -Destination $BinaryTarget -Force
+
+& (Join-Path $ScriptDir "claw-wallet.ps1") start
+
+# --- First-time only: wallet init (skipped when upgrade passes CLAW_WALLET_SKIP_INIT=1) ---
+function Do-WalletInit {
+    Write-Host "Waiting for sandbox and initializing wallet ..."
+    $envClayPath = Join-Path $ScriptDir ".env.clay"
+    for ($i = 1; $i -le 90; $i++) {
+        $sandboxUrl = $null
+        $agentToken = $null
+        if (Test-Path $envClayPath) {
+            $lines = Get-Content $envClayPath -ErrorAction SilentlyContinue
+            foreach ($line in $lines) {
+                if ($line -match '^CLAY_SANDBOX_URL=(.+)$') { $sandboxUrl = $matches[1].Trim().Trim('"').Trim("'").TrimEnd() }
+                if ($line -match '^(CLAY_AGENT_TOKEN|AGENT_TOKEN)=(.+)$') { $agentToken = $matches[2].Trim().Trim('"').Trim("'").TrimEnd() }
+            }
+        }
+        if ($sandboxUrl) {
+            try {
+                $health = Invoke-RestMethod -Uri "$sandboxUrl/health" -Method Get -ErrorAction Stop
+                if ($health.status -eq "ok" -and $agentToken) {
+                    $headers = @{
+                        "Authorization" = "Bearer $agentToken"
+                        "Content-Type" = "application/json"
+                    }
+                    $initResp = Invoke-RestMethod -Uri "$sandboxUrl/api/v1/wallet/init" -Method Post -Headers $headers -Body "{}" -ErrorAction Stop
+                    if ($initResp) {
+                        Write-Host "Wallet initialized."
+                    }
+                    return
+                }
+            } catch {
+                # Health or init may fail, retry
+            }
+        }
+        Start-Sleep -Seconds 1
+    }
+    Write-Host "Warning: health not ok or .env.clay not ready after 90s. Check sandbox.log, then run POST {CLAY_SANDBOX_URL}/api/v1/wallet/init manually. See SKILL.md."
+}
+
+if ($env:CLAW_WALLET_SKIP_INIT -ne "1") {
+    Do-WalletInit
+}
+
+# --- Common: final messages ---
+Write-Host "Check .env.clay for CLAY_SANDBOX_URL and CLAY_AGENT_TOKEN (or AGENT_TOKEN)."
+Write-Host "HTTP clients (curl, agents) must call protected APIs with: Authorization: Bearer <same token>."
+Write-Host "The same value is duplicated in identity.json as agent_token. See SKILL.md section 'HTTP authentication (sandbox)'."
+Write-Host "Sandbox binary refreshed at: $BinaryTarget"
+
+# Identity and config are persistent. To reset, delete .env.clay, identity.json and share3.json.
