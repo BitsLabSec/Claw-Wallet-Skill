@@ -1,6 +1,19 @@
 # Claw Wallet Skill
 
-Local sandbox wallet skill for OpenClaw agents. Install the sandbox locally, operate through localhost APIs or CLI, and support both local wallets and phase2 remote-managed wallets.
+Local sandbox wallet skill for OpenClaw and Claude Code agents. Install the sandbox locally, operate through localhost APIs or CLI, and support both local wallets and phase2 remote-managed wallets.
+
+## Claude Code marketplace
+
+This repository is now structured so it can be added as a third-party Claude Code marketplace.
+
+Use:
+
+```bash
+/plugin marketplace add <this-repo-url>
+/plugin install claw-wallet@claw-wallet-marketplace
+```
+
+This is a community marketplace setup, not an Anthropic-curated listing. To appear in Anthropic's official directory, the repo still needs to pass their review and submission flow.
 
 ## Installation
 

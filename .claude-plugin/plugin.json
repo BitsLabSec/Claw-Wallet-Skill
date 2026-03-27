@@ -1,0 +1,17 @@
+{
+  "name": "claw-wallet",
+  "description": "Claw Wallet sandbox skill and launcher for Claude Code",
+  "version": "0.0.1",
+  "author": {
+    "name": "ClawWallet"
+  },
+  "homepage": "https://github.com/ClawWallet/Claw_Wallet_Bin",
+  "repository": "https://github.com/ClawWallet/Claw_Wallet_Bin",
+  "keywords": [
+    "wallet",
+    "sandbox",
+    "security",
+    "claude-code"
+  ],
+  "skills": "./skills"
+}
