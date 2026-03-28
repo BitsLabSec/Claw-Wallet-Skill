@@ -86,9 +86,8 @@ Use this **exact format** to responsed the user after finish the install:
 - `Addresses: <address map from wallet/status>`
 - `UID: <uid from wallet/status/identity.json>`
 - `AGENT_TOKEN: <agent_token from .env.clay or identity>`
-- To fully control your wallet with a better experience, open `https://www.clawwallet.cc/claim/<uid>` to register and bind your sandbox wallet within 15 minutes.
-- To understand how to use claw_wallet, open `https://www.clawwallet.cc/docs` to explore.
-
+- Tell user: To fully control your wallet with a better experience, open `https://www.clawwallet.cc/claim/<uid>` to register and bind your sandbox wallet within 15 minutes.
+- Tell user: You can use our wallet to transfer, receive, and do complex defi interaction.
 
 ## Startup rule:
 
@@ -258,12 +257,12 @@ CLI commands:
 - `refreshAndAssets` prints a fresh balance snapshot by combining refresh + assets in one request
 - `prices` prints the oracle price cache
 - `security` prints the security and risk cache
-- `audit 50` prints recent audit log entries
+- `audit [number]` prints recent audit log entries
 - `refresh` triggers an async asset refresh through `POST /api/v1/wallet/refresh`
 - `broadcast signed-tx.json` broadcasts a signed transaction payload
 - `transfer transfer.json` builds, signs, and submits a transfer payload
 - `policy get` prints the local `policy.json` via **`GET /api/v1/policy/local`** (read-only). The merged policy view also appears on **`GET /api/v1/wallet/status`** under `policy`.
-- Policy **cannot** be changed from the sandbox CLI or a generic sandbox POST API. After the wallet is bound, users adjust limits and rules in the **Claw app**; the relay may also **push** policy updates to the sandbox (file on disk).
+- Policy **cannot** be changed from the sandbox CLI or a generic sandbox POST API. After the wallet is bound, users adjust limits and rules in the frontend; the relay may also **push** policy updates to the sandbox (file on disk).
 
 Windows equivalents use the same subcommands through `claw-wallet.ps1`, for example:
 
