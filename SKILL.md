@@ -86,7 +86,7 @@ Use this **exact format** to respond to the user after finishing the install:
 - `Addresses: <address map from wallet/status>`
 - `UID: <uid from wallet/status/identity.json>`
 - `AGENT_TOKEN: <agent_token from .env.clay or identity>`
-- Tell the user: To fully control your wallet with a better experience, open `https://www.clawwallet.cc/claim/<uid>` (substitute `<uid>` with the value from `wallet/status`) to register and bind your sandbox wallet within 15 minutes. Ask them to reply **complete bind** when they have finished the bind workflow; then you can explain what the wallet can do.
+- Tell the user: To fully control your wallet with a better experience, open `https://www.clawwallet.cc/claim/<uid>` (substitute `<uid>` with the value from `wallet/status`) to register and bind your sandbox wallet within 15 minutes. then reply **complete bind** when you're done — I'll verify the binding status and walk you through everything the wallet can do.
 
 - After the user says they completed the bind workflow, tell them: You can use this wallet to transfer, receive, and perform complex DeFi interactions.
 
