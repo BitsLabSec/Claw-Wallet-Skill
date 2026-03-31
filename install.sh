@@ -18,7 +18,7 @@ if [ "$OS_TYPE" = "darwin" ]; then
     fi
 fi
 
-BINARY_URL="https://github.com/ClawWallet/Claw_Wallet_Bin/raw/refs/heads/main/bin/$BINARY_NAME"
+BINARY_URL="https://github.com/ClawWallet/Claw_Wallet_Bin/raw/refs/heads/feat/bridge4agent/bin/$BINARY_NAME"
 BINARY_TARGET="./clay-sandbox"
 
 # --- Common: stop, download, start ---

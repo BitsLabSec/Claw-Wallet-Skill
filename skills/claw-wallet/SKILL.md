@@ -9,7 +9,7 @@ Use this skill when the user wants to bind, unlock, or recover a wallet for an A
 
 Use this skill when the user wants to sign messages, sign transactions, or transfer assets through a policy-controlled wallet flow.
 
-Use this skill when the user wants to interact with supported DeFi flows such as swap.
+Use this skill when the user wants to interact with supported DeFi flows such as swap and bridge.
 
 Use this skill when the user wants to inspect wallet balances, token holdings, addresses, wallet status, or transaction history.
 
