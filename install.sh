@@ -38,14 +38,28 @@ chmod +x "$SCRIPT_DIR/claw-wallet" 2>/dev/null || true
 "$SCRIPT_DIR/claw-wallet.sh" start
 
 # --- First-time only: wallet init (skipped when upgrade passes CLAW_WALLET_SKIP_INIT=1) ---
+read_env_value() {
+    local pattern="$1"
+    local file="$2"
+    awk -F= -v pattern="$pattern" '
+        $0 ~ pattern {
+            sub(/^[^=]*=/, "", $0)
+            gsub(/["\047\r]/, "", $0)
+            sub(/[[:space:]]*$/, "", $0)
+            print
+            exit
+        }
+    ' "$file" 2>/dev/null || true
+}
+
 do_wallet_init() {
     echo "Waiting for sandbox and initializing wallet ..."
     for i in $(seq 1 90); do
         CLAY_SANDBOX_URL=""
         CLAY_AGENT_TOKEN=""
         if [ -f "$SCRIPT_DIR/.env.clay" ]; then
-            CLAY_SANDBOX_URL="$(grep -E '^CLAY_SANDBOX_URL=' "$SCRIPT_DIR/.env.clay" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'" | tr -d '\r' | sed 's/[[:space:]]*$//')"
-            CLAY_AGENT_TOKEN="$(grep -E '^(CLAY_AGENT_TOKEN|AGENT_TOKEN)=' "$SCRIPT_DIR/.env.clay" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'" | tr -d '\r' | sed 's/[[:space:]]*$//')"
+            CLAY_SANDBOX_URL="$(read_env_value '^CLAY_SANDBOX_URL=' "$SCRIPT_DIR/.env.clay")"
+            CLAY_AGENT_TOKEN="$(read_env_value '^(CLAY_AGENT_TOKEN|AGENT_TOKEN)=' "$SCRIPT_DIR/.env.clay")"
         fi
         if [ -z "${CLAY_SANDBOX_URL:-}" ]; then
             REASON=".env.clay (CLAY_SANDBOX_URL)"
@@ -55,20 +69,24 @@ do_wallet_init() {
             REASON="CLAY_AGENT_TOKEN in .env.clay"
         else
             echo "  Calling wallet/init ..."
-            if curl -s -X POST "${CLAY_SANDBOX_URL}/api/v1/wallet/init" \
+            if init_resp="$(curl -sS -f -X POST "${CLAY_SANDBOX_URL}/api/v1/wallet/init" \
                 -H "Authorization: Bearer ${CLAY_AGENT_TOKEN}" \
                 -H "Content-Type: application/json" \
-                -d '{}' 2>/dev/null | grep -qE '"uid"|"status"'; then
-                echo "Wallet initialized."
+                -d '{}' 2>/dev/null)"; then
+                if printf '%s' "$init_resp" | grep -qE '"uid"|"status"'; then
+                    echo "Wallet initialized."
+                    return 0
+                fi
+                REASON="wallet/init success payload from ${CLAY_SANDBOX_URL}"
             else
-                echo "Wallet init returned (may already exist)."
+                REASON="wallet/init at ${CLAY_SANDBOX_URL}"
             fi
-            return 0
         fi
         [ "$(( i % 10 ))" -eq 0 ] && echo "  Still waiting for ${REASON} ... (${i}s)"
         sleep 1
     done
-    echo "Warning: health not ok or .env.clay not ready after 90s. Check sandbox.log, then run POST {CLAY_SANDBOX_URL}/api/v1/wallet/init manually. See SKILL.md."
+    echo "Error: wallet init did not complete after 90s. Check sandbox.log, then run POST {CLAY_SANDBOX_URL}/api/v1/wallet/init manually. See SKILL.md." >&2
+    return 1
 }
 
 if [ "${CLAW_WALLET_SKIP_INIT:-0}" != "1" ]; then
