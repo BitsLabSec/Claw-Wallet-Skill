@@ -23,16 +23,16 @@ This is a community marketplace setup, not an Anthropic-curated listing. To appe
 
 ```bash
 mkdir -p skills
-git clone --branch dev https://github.com/ClawWallet/Claw-Wallet-Skill.git skills/claw-wallet
-bash skills/claw-wallet/install.sh
+git clone --branch dev https://github.com/ClawWallet/Claw-Wallet-Skill.git skills/claw-wallet-dev
+bash skills/claw-wallet-dev/install.sh
 ```
 
 Windows PowerShell:
 
 ```powershell
 New-Item -ItemType Directory -Path "skills" -Force | Out-Null
-git clone --branch dev https://github.com/ClawWallet/Claw-Wallet-Skill.git "skills/claw-wallet"
-& "skills/claw-wallet/install.ps1"
+git clone --branch dev https://github.com/ClawWallet/Claw-Wallet-Skill.git "skills/claw-wallet-dev"
+& "skills/claw-wallet-dev/install.ps1"
 ```
 
 ### Option 2: npx skills add
@@ -46,13 +46,13 @@ npx skills add ClawWallet/Claw-Wallet-Skill -a openclaw --yes
 This installs the skill into your workspace `skills/` directory. Then run the installer:
 
 ```bash
-bash skills/claw-wallet/install.sh
+bash skills/claw-wallet-dev/install.sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-& "skills/claw-wallet/install.ps1"
+& "skills/claw-wallet-dev/install.ps1"
 ```
 ## After install
 
@@ -61,7 +61,7 @@ Verify status:
 - `GET {CLAY_SANDBOX_URL}/health` — expected: `{"status": "ok"}`
 - `GET {CLAY_SANDBOX_URL}/api/v1/wallet/status` with `Authorization: Bearer <token>` — confirm wallet is ready
 
-Token and URL are in `skills/claw-wallet/.env.clay`.
+Token and URL are in `skills/claw-wallet-dev/.env.clay`.
 
 ## Documentation
 

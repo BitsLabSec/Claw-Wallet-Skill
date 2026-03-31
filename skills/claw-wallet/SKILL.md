@@ -32,13 +32,13 @@ This skill equips an OpenClaw agent with a local multi-chain wallet sandbox.
 All files live in one directory:
 
 ```
-{your_workspace}/skills/claw-wallet/
+{your_workspace}/skills/claw-wallet-dev/
 ```
 
 | Platform | Resolved path |
 |----------|---------------|
-| Linux/macOS | `skills/claw-wallet/` (relative to workspace root) |
-| Windows | `skills\claw-wallet\` (relative to workspace root) |
+| Linux/macOS | `skills/claw-wallet-dev/` (relative to workspace root) |
+| Windows | `skills\claw-wallet-dev\` (relative to workspace root) |
 
 ### Install
 
@@ -46,8 +46,8 @@ Before cloning or running the installer, first check from the **workspace root**
 
 - **If it exists:** Do **not** run the git clone or `install.sh` / `install.ps1` bootstrap unless the user explicitly wants a reinstall.
   1. Start the sandbox first.
-     - Linux/macOS: `skills/claw-wallet/claw-wallet.sh start`
-     - Windows: `skills/claw-wallet/claw-wallet.ps1 start`
+     - Linux/macOS: `skills/claw-wallet-dev/claw-wallet.sh start`
+     - Windows: `skills/claw-wallet-dev/claw-wallet.ps1 start`
      - Use `restart` if the sandbox is unhealthy.
   2. Call `POST {CLAY_SANDBOX_URL}/api/v1/wallet/init` with `Authorization: Bearer <token>` from **.env.clay**.
      - This call is idempotent, so it is safe to run even when the wallet already exists.
@@ -67,7 +67,7 @@ Linux/macOS:
 ```bash
 mkdir -p skills
 git clone https://github.com/ClawWallet/Claw-Wallet-Skill.git skills/claw-wallet
-bash skills/claw-wallet/install.sh
+bash skills/claw-wallet-dev/install.sh
 ```
 
 Windows PowerShell:
@@ -75,7 +75,7 @@ Windows PowerShell:
 ```powershell
 New-Item -ItemType Directory -Path "skills" -Force | Out-Null
 git clone https://github.com/ClawWallet/Claw-Wallet-Skill.git "skills/claw-wallet"
-& "skills/claw-wallet/install.ps1"
+& "skills/claw-wallet-dev/install.ps1"
 ```
 
 After install, use `GET {CLAY_SANDBOX_URL}/api/v1/wallet/status` with `Authorization: Bearer <token>` — confirm wallet is ready. The response includes **address information** and **uid** (when present). **You must show the user:** **wallet addresses** (from the response), **uid** (from the response when present) ( HTTP API under `/api/v1/…`, Swagger at `/docs`, same origin).  read it only from `.env.clay` / `identity.json` for `Authorization` (see **HTTP authentication (sandbox)** below).
@@ -93,7 +93,7 @@ Use this **exact format** to respond to the user after finishing the install:
 ## Startup rule:
 
 - do not run `clay-sandbox` directly as a long-lived foreground daemon from OpenClaw
-- use `skills/claw-wallet/claw-wallet.sh start` / `skills/claw-wallet/claw-wallet.ps1 start`
+- use `skills/claw-wallet-dev/claw-wallet.sh start` / `skills/claw-wallet-dev/claw-wallet.ps1 start`
 - use `restart` if the process exists but is unhealthy
 - use `serve` only when you intentionally want a foreground process
 - If the user wants balances or transaction history, call `POST {CLAY_SANDBOX_URL}/api/v1/wallet/refresh` first, or use `refreshAndAssets` for a fresh balance snapshot.
@@ -104,7 +104,7 @@ Use this **exact format** to respond to the user after finishing the install:
 
 **Agents (automating bind after the user starts the flow):** The user will obtain a **`message_hash_hex`** from the Claw bind / challenge step and paste or send it to you. You must call the **sandbox** bind API with the same bearer token used for all authenticated sandbox requests.
 
-1. **Token:** Use **`AGENT_TOKEN`** / **`CLAY_AGENT_TOKEN`** from `skills/claw-wallet/.env.clay` (or `agent_token` in `identity.json`). Send it as:
+1. **Token:** Use **`AGENT_TOKEN`** / **`CLAY_AGENT_TOKEN`** from `skills/claw-wallet-dev/.env.clay` (or `agent_token` in `identity.json`). Send it as:
    - `Authorization: Bearer <token>`
 2. **Request:**
    - **Method:** `POST`
@@ -153,8 +153,8 @@ After install or relaunch, verify:
 
 | Location | Field(s) |
 |----------|-----------|
-| `skills/claw-wallet/.env.clay` | **`CLAY_SANDBOX_URL`** — base URL (scheme, host, port) for the sandbox HTTP server (API `/api/v1/…`, `/docs`). Also `CLAY_AGENT_TOKEN` or `AGENT_TOKEN` (same value; installer/bootstrap writes both). |
-| `skills/claw-wallet/identity.json` | `agent_token` |
+| `skills/claw-wallet-dev/.env.clay` | **`CLAY_SANDBOX_URL`** — base URL (scheme, host, port) for the sandbox HTTP server (API `/api/v1/…`, `/docs`). Also `CLAY_AGENT_TOKEN` or `AGENT_TOKEN` (same value; installer/bootstrap writes both). |
+| `skills/claw-wallet-dev/identity.json` | `agent_token` |
 
 Example workspace test layout (same idea):
 
@@ -193,13 +193,13 @@ Wallet data (`.env.clay`, `identity.json`, `share3.json`) is preserved in both c
 Linux/macOS:
 
 ```bash
-skills/claw-wallet/claw-wallet.sh upgrade
+skills/claw-wallet-dev/claw-wallet.sh upgrade
 ```
 
 Windows PowerShell:
 
 ```powershell
-& "skills/claw-wallet/claw-wallet.ps1" upgrade
+& "skills/claw-wallet-dev/claw-wallet.ps1" upgrade
 ```
 
 ### Uninstall
@@ -220,13 +220,13 @@ The uninstall script will:
 Linux/macOS:
 
 ```bash
-bash skills/claw-wallet/claw-wallet.sh uninstall
+bash skills/claw-wallet-dev/claw-wallet.sh uninstall
 ```
 
 Windows PowerShell:
 
 ```powershell
-& "skills/claw-wallet/claw-wallet.ps1" uninstall
+& "skills/claw-wallet-dev/claw-wallet.ps1" uninstall
 ```
 
 ## CLI and Manage
@@ -235,9 +235,9 @@ Use the wrapper scripts to either manage the sandbox process or call the binary 
 
 Public wrapper entrypoints:
 
-- Linux/macOS: `skills/claw-wallet/claw-wallet.sh`
-- Windows CMD: `skills\claw-wallet\claw-wallet.cmd`
-- Windows PowerShell: `& "skills/claw-wallet/claw-wallet.ps1"`
+- Linux/macOS: `skills/claw-wallet-dev/claw-wallet.sh`
+- Windows CMD: `skills\claw-wallet-dev\claw-wallet.cmd`
+- Windows PowerShell: `& "skills/claw-wallet-dev/claw-wallet.ps1"`
 
 Process management:
 
@@ -267,9 +267,9 @@ CLI commands:
 
 Windows equivalents use the same subcommands through `claw-wallet.ps1`, for example:
 
-- `& "skills/claw-wallet/claw-wallet.ps1" help`
-- `& "skills/claw-wallet/claw-wallet.ps1" status --short`
-- `Get-Content policy.json | & "skills/claw-wallet/claw-wallet.ps1" policy set -`
+- `& "skills/claw-wallet-dev/claw-wallet.ps1" help`
+- `& "skills/claw-wallet-dev/claw-wallet.ps1" status --short`
+- `Get-Content policy.json | & "skills/claw-wallet-dev/claw-wallet.ps1" policy set -`
 
 Help and usage:
 
