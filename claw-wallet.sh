@@ -5,6 +5,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BIN="$SCRIPT_DIR/clay-sandbox"
 LOG_FILE="$SCRIPT_DIR/sandbox.log"
 PID_FILE="$SCRIPT_DIR/sandbox.pid"
+SKILL_BRANCH="${CLAW_WALLET_SKILL_BRANCH:-dev}"
 
 stop_sandbox() {
     cd "$SCRIPT_DIR"
@@ -33,7 +34,9 @@ if [ "${1:-}" = "upgrade" ]; then
         [ -f "$SCRIPT_DIR/share3.json" ] && cp -a "$SCRIPT_DIR/share3.json" "$BAK_DIR/"
         git init
         git remote add origin https://github.com/ClawWallet/Claw-Wallet-Skill.git
-        if git fetch origin main 2>/dev/null; then
+        if git fetch origin "$SKILL_BRANCH" 2>/dev/null; then
+            git reset --hard "origin/$SKILL_BRANCH"
+        elif git fetch origin main 2>/dev/null; then
             git reset --hard origin/main
         else
             git fetch origin master

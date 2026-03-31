@@ -4,7 +4,8 @@ $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location -Path $ScriptDir
 
-$BinaryUrl = "https://github.com/ClawWallet/Claw_Wallet_Bin/raw/refs/heads/main/bin/clay-sandbox-windows-amd64.exe"
+$BinBranch = if ($env:CLAW_WALLET_BIN_BRANCH) { $env:CLAW_WALLET_BIN_BRANCH } else { "dev" }
+$BinaryUrl = "https://github.com/ClawWallet/Claw_Wallet_Bin/raw/refs/heads/$BinBranch/bin/clay-sandbox-windows-amd64.exe"
 $BinaryTarget = Join-Path $ScriptDir "clay-sandbox.exe"
 
 # --- Common: stop, download, start ---

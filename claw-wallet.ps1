@@ -3,6 +3,7 @@ $BinaryPath = Join-Path $ScriptDir "clay-sandbox.exe"
 $LogPath = Join-Path $ScriptDir "sandbox.log"
 $ErrLogPath = Join-Path $ScriptDir "sandbox_err.log"
 $PidPath = Join-Path $ScriptDir "sandbox.pid"
+$SkillBranch = if ($env:CLAW_WALLET_SKILL_BRANCH) { $env:CLAW_WALLET_SKILL_BRANCH } else { "dev" }
 
 # upgrade runs before binary check (git + install, no sandbox needed yet)
 if ($args.Count -gt 0 -and $args[0] -eq "upgrade") {
@@ -24,12 +25,17 @@ if ($args.Count -gt 0 -and $args[0] -eq "upgrade") {
         if (Test-Path (Join-Path $ScriptDir "share3.json")) { Copy-Item (Join-Path $ScriptDir "share3.json") $BakDir }
         git init
         git remote add origin https://github.com/ClawWallet/Claw-Wallet-Skill.git
-        git fetch origin main 2>$null
+        git fetch origin $SkillBranch 2>$null
         if ($LASTEXITCODE -eq 0) {
-            git reset --hard origin/main
+            git reset --hard "origin/$SkillBranch"
         } else {
-            git fetch origin master
-            git reset --hard origin/master
+            git fetch origin main 2>$null
+            if ($LASTEXITCODE -eq 0) {
+                git reset --hard origin/main
+            } else {
+                git fetch origin master
+                git reset --hard origin/master
+            }
         }
         if (Test-Path (Join-Path $BakDir ".env.clay")) { Copy-Item (Join-Path $BakDir ".env.clay") $ScriptDir -Force }
         if (Test-Path (Join-Path $BakDir "identity.json")) { Copy-Item (Join-Path $BakDir "identity.json") $ScriptDir -Force }
