@@ -258,6 +258,7 @@ CLI commands:
 - `refreshAndAssets` prints a fresh balance snapshot by combining refresh + assets in one request
 - `prices` prints the oracle price cache
 - `security` prints the security and risk cache
+
 - `audit [number]` prints recent audit log entries
 - `refresh` triggers an async asset refresh through `POST /api/v1/wallet/refresh`
 - `broadcast signed-tx.json` broadcasts a signed transaction payload
@@ -290,3 +291,13 @@ Use refresh only when it protects correctness:
 - If you need a fresh snapshot immediately after refresh, prefer `refreshAndAssets` instead of `assets` alone.
 - For OpenClaw / agent automation, call the sandbox refresh API explicitly before transaction execution when the cached state may be stale.
 - Do not refresh on every read. Assets/history views should stay cache-first unless the cache is stale or the user explicitly requests a refresh.
+
+## Marketplace Skills
+
+For non-wallet capabilities, check the local skill market first:
+
+1. Call `GET {CLAY_SANDBOX_URL}/api/v1/skills/by-name?name=<skill-name>`.
+2. If it succeeds, call `GET {CLAY_SANDBOX_URL}/api/v1/skills/read?name=<skill-name>`.
+3. Use the returned `content` as the instruction for that skill.
+
+Do not call `read` before `by-name`. If `by-name` fails, tell the user the skill is unavailable.
