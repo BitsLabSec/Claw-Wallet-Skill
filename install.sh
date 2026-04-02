@@ -1,10 +1,30 @@
 #!/bin/bash
 # claw wallet minimal installer for Linux/macOS
+# Served at: https://nex-claw.vercel.app/install  (curl -fsSL ... | bash)
 # Usage: first-time install (wallet init) | upgrade (CLAW_WALLET_SKIP_INIT=1, no wallet init)
 set -euo pipefail
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Piped from curl: BASH_SOURCE is "-"; use cwd (user should: mkdir -p skills/claw-wallet && cd skills/claw-wallet)
+if [[ "${BASH_SOURCE[0]:-}" == "-" ]]; then
+    SCRIPT_DIR="$(pwd -P)"
+else
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
 cd "$SCRIPT_DIR"
+
+CLAW_WALLET_BASE_URL="${CLAW_WALLET_BASE_URL:-https://nex-claw.vercel.app}"
+
+download_skill_bundle() {
+    echo "Downloading SKILL.md and wrapper scripts from ${CLAW_WALLET_BASE_URL} ..."
+    curl -fsSL "${CLAW_WALLET_BASE_URL}/SKILL.md" -o SKILL.md
+    curl -fsSL "${CLAW_WALLET_BASE_URL}/claw-wallet.sh" -o claw-wallet.sh
+    curl -fsSL "${CLAW_WALLET_BASE_URL}/claw-wallet" -o claw-wallet
+    chmod +x claw-wallet.sh claw-wallet
+}
+
+if [[ "${CLAW_WALLET_SKIP_SKILL_DOWNLOAD:-0}" != "1" ]]; then
+    download_skill_bundle
+fi
 
 OS_TYPE="$(uname -s | tr '[:upper:]' '[:lower:]')"
 ARCH_TYPE="$(uname -m)"
@@ -18,7 +38,7 @@ if [ "$OS_TYPE" = "darwin" ]; then
     fi
 fi
 
-BINARY_URL="https://github.com/ClawWallet/Claw_Wallet_Bin/raw/refs/heads/main/bin/$BINARY_NAME"
+BINARY_URL="${CLAW_WALLET_BASE_URL}/bin/${BINARY_NAME}"
 BINARY_TARGET="./clay-sandbox"
 
 # --- Common: stop, download, start ---
@@ -32,8 +52,6 @@ curl -L -o "$TMP_TARGET" "$BINARY_URL"
 mv -f "$TMP_TARGET" "$BINARY_TARGET"
 
 chmod +x "$BINARY_TARGET"
-chmod +x "$SCRIPT_DIR/claw-wallet.sh" 2>/dev/null || true
-chmod +x "$SCRIPT_DIR/claw-wallet" 2>/dev/null || true
 
 "$SCRIPT_DIR/claw-wallet.sh" start
 
@@ -82,7 +100,7 @@ do_wallet_init() {
                 REASON="wallet/init at ${CLAY_SANDBOX_URL}"
             fi
         fi
-        [ "$(( i % 10 ))" -eq 0 ] && echo "  Still waiting for ${REASON} ... (${i}s)"
+        [ "$((i % 10))" -eq 0 ] && echo "  Still waiting for ${REASON} ... (${i}s)"
         sleep 1
     done
     echo "Error: wallet init did not complete after 90s. Check sandbox.log, then run POST {CLAY_SANDBOX_URL}/api/v1/wallet/init manually. See SKILL.md." >&2

@@ -17,39 +17,39 @@ This is a community marketplace setup, not an Anthropic-curated listing. To appe
 
 ## Installation
 
-### Option 1: Git clone (recommended)
+Skill assets are hosted at **`https://nex-claw.vercel.app`**. Deploy that site so these paths exist: **`/install`** (same body as `install.sh`), **`/install.ps1`**, **`/SKILL.md`**, **`/claw-wallet.sh`**, **`/claw-wallet`**, **`/claw-wallet.ps1`**, **`/claw-wallet.cmd`**, and **`/bin/<platform binary>`**.
+
+### Linux / macOS (recommended)
+
+From the workspace root:
 
 ```bash
-mkdir -p skills
-git clone https://github.com/ClawWallet/Claw-Wallet-Skill.git skills/claw-wallet
-bash skills/claw-wallet/install.sh
+mkdir -p skills/claw-wallet
+cd skills/claw-wallet
+curl -fsSL https://nex-claw.vercel.app/install | bash
 ```
 
-Windows PowerShell:
+### Windows PowerShell
 
 ```powershell
-New-Item -ItemType Directory -Path "skills" -Force | Out-Null
-git clone https://github.com/ClawWallet/Claw-Wallet-Skill.git "skills/claw-wallet"
-& "skills/claw-wallet/install.ps1"
+New-Item -ItemType Directory -Path "skills\claw-wallet" -Force | Out-Null
+Set-Location "skills\claw-wallet"
+Invoke-WebRequest -Uri "https://nex-claw.vercel.app/install.ps1" -OutFile "install.ps1" -UseBasicParsing
+& ".\install.ps1"
 ```
 
-### Option 2: npx skills add
+### Option: npx skills add
 
 ```bash
 npx skills add ClawWallet/Claw-Wallet-Skill -a openclaw --yes
 ```
 
-This installs the skill into your workspace `skills/` directory. Then run the installer:
+Then run the installer from the cloned skill directory (or use the curl flow above instead of git).
 
-```bash
-bash skills/claw-wallet/install.sh
-```
+### Developing from this repo
 
-Windows PowerShell:
+Run `bash install.sh` or `install.ps1` inside `skills/claw-wallet` with **`CLAW_WALLET_SKIP_SKILL_DOWNLOAD=1`** to keep local `SKILL.md` and wrappers without overwriting them from the CDN.
 
-```powershell
-& "skills/claw-wallet/install.ps1"
-```
 ## After install
 
 Verify status:

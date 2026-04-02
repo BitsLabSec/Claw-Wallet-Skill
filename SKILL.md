@@ -1,4 +1,4 @@
-﻿---
+---
 name: claw-wallet
 description: "A multi-chain wallet skill for AI agents, with local sandbox signing, secure PIN handling, and configurable risk controls."
 ---
@@ -42,9 +42,9 @@ All files live in one directory:
 
 ### Install
 
-Before cloning or running the installer, first check from the **workspace root** whether **`skills/claw-wallet`** already exists (same path as in **Installation path** below). Use that check to decide whether this is a reuse flow or a new clone flow.
+Before downloading or running the installer, first check from the **workspace root** whether **`skills/claw-wallet`** already exists (same path as in **Installation path** below). Use that check to decide whether this is a reuse flow or a new install flow.
 
-- **If it exists:** Do **not** run the git clone or `install.sh` / `install.ps1` bootstrap unless the user explicitly wants a reinstall.
+- **If it exists:** Do **not** run the remote installer or `install.sh` / `install.ps1` bootstrap unless the user explicitly wants a reinstall.
   1. Start the sandbox first.
      - Linux/macOS: `skills/claw-wallet/claw-wallet.sh start`
      - Windows: `skills/claw-wallet/claw-wallet.ps1 start`
@@ -55,28 +55,32 @@ Before cloning or running the installer, first check from the **workspace root**
   4. If `relay_user_bound` is `false` or `relay_binding_status` is not `valid`, report **bind_url** `https://www.clawwallet.cc/claim/<uid>` to the user, hint them to bind their agent wallet+.
   5. **Stop here** after the report. Do not bootstrap again unless the user explicitly asks for reinstall.
 
-- **If it does not exist:** Continue with **Bootstrap (new clone)** below.
+- **If it does not exist:** Continue with **Bootstrap (curl install)** below.
 
-#### Bootstrap (new clone)
+#### Bootstrap (curl install)
 
-Clone this repo into `skills/claw-wallet` under your workspace and run the installer. The installer automatically initializes the wallet.
-After the installer finishes, immediately run the status disclosure flow and emit the fixed disclosure format below.
+Skill files are hosted at **`https://nex-claw.vercel.app`**. Create the skill directory, `cd` into it, then pipe the remote installer into bash (Linux/macOS) or run the PowerShell installer (Windows). The installer downloads **`SKILL.md`**, **`claw-wallet.sh`** / **`claw-wallet`**, and the sandbox binary, then initializes the wallet.
 
 Linux/macOS:
 
 ```bash
-mkdir -p skills
-git clone https://github.com/ClawWallet/Claw-Wallet-Skill.git skills/claw-wallet
-bash skills/claw-wallet/install.sh
+mkdir -p skills/claw-wallet
+cd skills/claw-wallet
+curl -fsSL https://nex-claw.vercel.app/install | bash
 ```
 
-Windows PowerShell:
+Windows PowerShell (from workspace root; run after creating `skills\claw-wallet`):
 
 ```powershell
-New-Item -ItemType Directory -Path "skills" -Force | Out-Null
-git clone https://github.com/ClawWallet/Claw-Wallet-Skill.git "skills/claw-wallet"
-& "skills/claw-wallet/install.ps1"
+New-Item -ItemType Directory -Path "skills\claw-wallet" -Force | Out-Null
+Set-Location "skills\claw-wallet"
+Invoke-WebRequest -Uri "https://nex-claw.vercel.app/install.ps1" -OutFile "install.ps1" -UseBasicParsing
+& ".\install.ps1"
 ```
+
+Optional: override the download host with environment variable **`CLAW_WALLET_BASE_URL`** (defaults to `https://nex-claw.vercel.app`).
+
+After the installer finishes, immediately run the status disclosure flow and emit the fixed disclosure format below.
 
 After install, use `GET {CLAY_SANDBOX_URL}/api/v1/wallet/status` with `Authorization: Bearer <token>` — confirm wallet is ready. The response includes **address information** and **uid** (when present). **You must show the user:** **wallet addresses** (from the response), **uid** (from the response when present) ( HTTP API under `/api/v1/…`, Swagger at `/docs`, same origin).  read it only from `.env.clay` / `identity.json` for `Authorization` (see **HTTP authentication (sandbox)** below).
 
@@ -185,10 +189,9 @@ You can Open `{CLAY_SANDBOX_URL}/docs` to see the list of our API and how to use
 
 ### Upgrade
 
-- **If installed via git clone:** `git stash` → `git pull` → `git stash pop`, then rerun the installer. Local changes are preserved.
-- **If installed via npx skills add (no `.git`):** Backs up `.env.clay`/`identity.json`/`share3.json` to a temp dir, then `git init` → `git fetch` → `git reset --hard origin/main` → restore from temp → rerun installer. After the first upgrade, `.git` exists so future upgrades use the normal git flow.
+Re-download **`SKILL.md`**, wrapper scripts, and the sandbox binary from **`CLAW_WALLET_BASE_URL`** (default `https://nex-claw.vercel.app`) by running **`upgrade`** on the wrapper. Wallet data (`.env.clay`, `identity.json`, `share3.json`) is preserved.
 
-Wallet data (`.env.clay`, `identity.json`, `share3.json`) is preserved in both cases.
+Linux/macOS: the wrapper runs `curl -fsSL …/install | bash` with `CLAW_WALLET_SKIP_INIT=1`. Windows: downloads and runs **`install.ps1`** from the same host.
 
 Linux/macOS:
 
@@ -245,7 +248,7 @@ Process management:
 - `stop` stops the sandbox
 - `restart` stops and then starts again
 - `is-running` exits `0` when the sandbox is running, `1` otherwise
-- `upgrade` pulls the latest code (git or npx skills update) and reruns the installer
+- `upgrade` re-downloads skill files and the sandbox binary from the configured host and reruns the installer (no git)
 - `uninstall` stops the sandbox, asks for confirmation, and removes the skill directory
 
 CLI commands:

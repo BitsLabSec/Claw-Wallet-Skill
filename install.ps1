@@ -1,10 +1,36 @@
 # claw wallet minimal installer for Windows (PowerShell)
+# Served at: https://nex-claw.vercel.app/install.ps1
 # Usage: first-time install (wallet init) | upgrade (CLAW_WALLET_SKIP_INIT=1, no wallet init)
 $ErrorActionPreference = "Stop"
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+# When upgrade runs the script from a temp file, CLAW_WALLET_INSTALL_DIR is the skill directory
+if ($env:CLAW_WALLET_INSTALL_DIR) {
+    $ScriptDir = $env:CLAW_WALLET_INSTALL_DIR
+} else {
+    $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+}
 Set-Location -Path $ScriptDir
 
-$BinaryUrl = "https://github.com/ClawWallet/Claw_Wallet_Bin/raw/refs/heads/main/bin/clay-sandbox-windows-amd64.exe"
+$BaseUrl = if ($env:CLAW_WALLET_BASE_URL) { $env:CLAW_WALLET_BASE_URL } else { "https://nex-claw.vercel.app" }
+
+function Download-SkillBundle {
+    Write-Host "Downloading SKILL.md and wrapper scripts from $BaseUrl ..."
+    $skillMd = Join-Path $ScriptDir "SKILL.md"
+    Invoke-WebRequest -Uri "$BaseUrl/SKILL.md" -OutFile $skillMd -UseBasicParsing
+    $ps1 = Join-Path $ScriptDir "claw-wallet.ps1"
+    Invoke-WebRequest -Uri "$BaseUrl/claw-wallet.ps1" -OutFile $ps1 -UseBasicParsing
+    $cmdPath = Join-Path $ScriptDir "claw-wallet.cmd"
+    try {
+        Invoke-WebRequest -Uri "$BaseUrl/claw-wallet.cmd" -OutFile $cmdPath -UseBasicParsing
+    } catch {
+        Write-Host "Note: claw-wallet.cmd not available from server (optional)."
+    }
+}
+
+if ($env:CLAW_WALLET_SKIP_SKILL_DOWNLOAD -ne "1") {
+    Download-SkillBundle
+}
+
+$BinaryUrl = "$BaseUrl/bin/clay-sandbox-windows-amd64.exe"
 $BinaryTarget = Join-Path $ScriptDir "clay-sandbox.exe"
 
 # --- Common: stop, download, start ---
@@ -15,7 +41,7 @@ if (-not $SkipStop) {
 
 Write-Host "Downloading sandbox binary from $BinaryUrl ..."
 $TempBinary = "$BinaryTarget.download"
-Invoke-WebRequest -Uri $BinaryUrl -OutFile $TempBinary
+Invoke-WebRequest -Uri $BinaryUrl -OutFile $TempBinary -UseBasicParsing
 Move-Item -Path $TempBinary -Destination $BinaryTarget -Force
 
 & (Join-Path $ScriptDir "claw-wallet.ps1") start

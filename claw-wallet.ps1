@@ -4,40 +4,25 @@ $LogPath = Join-Path $ScriptDir "sandbox.log"
 $ErrLogPath = Join-Path $ScriptDir "sandbox_err.log"
 $PidPath = Join-Path $ScriptDir "sandbox.pid"
 
-# upgrade runs before binary check (git + install, no sandbox needed yet)
+# upgrade runs before binary check (remote install script + binary, no git)
 if ($args.Count -gt 0 -and $args[0] -eq "upgrade") {
     Set-Location $ScriptDir
     if (Test-Path $BinaryPath) {
         & $BinaryPath stop 2>$null
     }
     Remove-Item $PidPath -ErrorAction SilentlyContinue
-    if (Test-Path (Join-Path $ScriptDir ".git")) {
-        git stash
-        git pull
-        git stash pop
-    } else {
-        Write-Host "No .git found (installed via npx skills). Initializing git and pulling latest ..."
-        Set-Location $ScriptDir
-        $BakDir = New-TemporaryFile | ForEach-Object { Remove-Item $_; New-Item -ItemType Directory -Path $_.FullName }
-        if (Test-Path (Join-Path $ScriptDir ".env.clay")) { Copy-Item (Join-Path $ScriptDir ".env.clay") $BakDir }
-        if (Test-Path (Join-Path $ScriptDir "identity.json")) { Copy-Item (Join-Path $ScriptDir "identity.json") $BakDir }
-        if (Test-Path (Join-Path $ScriptDir "share3.json")) { Copy-Item (Join-Path $ScriptDir "share3.json") $BakDir }
-        git init
-        git remote add origin https://github.com/ClawWallet/Claw-Wallet-Skill.git
-        git fetch origin main 2>$null
-        if ($LASTEXITCODE -eq 0) {
-            git reset --hard origin/main
-        } else {
-            git fetch origin master
-            git reset --hard origin/master
-        }
-        if (Test-Path (Join-Path $BakDir ".env.clay")) { Copy-Item (Join-Path $BakDir ".env.clay") $ScriptDir -Force }
-        if (Test-Path (Join-Path $BakDir "identity.json")) { Copy-Item (Join-Path $BakDir "identity.json") $ScriptDir -Force }
-        if (Test-Path (Join-Path $BakDir "share3.json")) { Copy-Item (Join-Path $BakDir "share3.json") $ScriptDir -Force }
-        Remove-Item $BakDir -Recurse -Force
-    }
+    $BaseUrl = if ($env:CLAW_WALLET_BASE_URL) { $env:CLAW_WALLET_BASE_URL } else { "https://nex-claw.vercel.app" }
+    Write-Host "Upgrading from $BaseUrl/install.ps1 ..."
     $env:CLAW_WALLET_SKIP_INIT = "1"
-    & "$ScriptDir\install.ps1"
+    $env:CLAW_WALLET_INSTALL_DIR = $ScriptDir
+    $installPs1 = Join-Path $env:TEMP "claw-wallet-install-$(Get-Random).ps1"
+    try {
+        Invoke-WebRequest -Uri "$BaseUrl/install.ps1" -OutFile $installPs1 -UseBasicParsing
+        & $installPs1
+    } finally {
+        Remove-Item $installPs1 -ErrorAction SilentlyContinue
+        Remove-Item Env:\CLAW_WALLET_INSTALL_DIR -ErrorAction SilentlyContinue
+    }
     exit $LASTEXITCODE
 }
 
