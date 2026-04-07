@@ -42,7 +42,7 @@ All files live in one directory:
 
 ### Install
 
-Before cloning or running the installer, first check from the **workspace root** whether **`skills/claw-wallet`** already exists (same path as in **Installation path** below). Use that check to decide whether this is a reuse flow or a new clone flow.
+Before cloning or running the installer, first check from the **workspace root** whether **`skills/claw-wallet-dev`** already exists (same path as in **Installation path** below). Use that check to decide whether this is a reuse flow or a new clone flow.
 
 - **If it exists:** Do **not** run the git clone or `install.sh` / `install.ps1` bootstrap unless the user explicitly wants a reinstall.
   1. Start the sandbox first.
@@ -59,14 +59,14 @@ Before cloning or running the installer, first check from the **workspace root**
 
 #### Bootstrap (new clone)
 
-Clone this repo into `skills/claw-wallet` under your workspace and run the installer. The installer automatically initializes the wallet.
+Clone this repo into `skills/claw-wallet-dev` under your workspace from the `dev` branch and run the installer. The installer automatically initializes the wallet.
 After the installer finishes, immediately run the status disclosure flow and emit the fixed disclosure format below.
 
 Linux/macOS:
 
 ```bash
 mkdir -p skills
-git clone https://github.com/ClawWallet/Claw-Wallet-Skill.git skills/claw-wallet
+git clone --branch dev --single-branch https://github.com/ClawWallet/Claw-Wallet-Skill.git skills/claw-wallet-dev
 bash skills/claw-wallet-dev/install.sh
 ```
 
@@ -74,7 +74,7 @@ Windows PowerShell:
 
 ```powershell
 New-Item -ItemType Directory -Path "skills" -Force | Out-Null
-git clone https://github.com/ClawWallet/Claw-Wallet-Skill.git "skills/claw-wallet"
+git clone --branch dev --single-branch https://github.com/ClawWallet/Claw-Wallet-Skill.git "skills/claw-wallet-dev"
 & "skills/claw-wallet-dev/install.ps1"
 ```
 
