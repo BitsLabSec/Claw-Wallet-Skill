@@ -26,8 +26,8 @@ Skill assets are hosted at **`https://test.clawwallet.cc`**. Deploy that site so
 From the workspace root:
 
 ```bash
-mkdir -p skills/claw-wallet
-cd skills/claw-wallet
+mkdir -p skills/claw-wallet-test
+cd skills/claw-wallet-test
 curl -fsSL https://test.clawwallet.cc/install | bash
 ```
 

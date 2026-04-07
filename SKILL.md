@@ -1,6 +1,7 @@
-﻿---
+---
 name: claw-wallet
 description: "A multi-chain wallet skill for AI agents, with local sandbox signing, secure PIN handling, and configurable risk controls."
+metadata: {"openclaw":{"always":false,"autonomousInvocation":false,"modelInvocation":{"default":"require-user-confirmation","reason":"Reinstall, upgrade, uninstall, and transaction execution require explicit user confirmation."},"homepage":"https://github.com/ClawWallet/Claw-Wallet-Skill","repository":"https://github.com/ClawWallet/Claw-Wallet-Skill","upstream":{"skillRepo":"https://github.com/ClawWallet/Claw-Wallet-Skill","binaryRepo":"https://github.com/ClawWallet/Claw_Wallet_Bin","distributionHost":"https://test.clawwallet.cc/skills","distributionBase":"https://test.clawwallet.cc","branch":"dev","hosts":["github.com","test.clawwallet.cc"],"reviewNotes":["This repository contains the skill source and wrapper scripts.","Claw_Wallet_Bin contains the sandbox binaries referenced by the installer.","test.clawwallet.cc distributes the published installer, wrappers, and binaries for the dev environment."]},"os":["darwin","linux","win32"],"primaryEnv":"CLAY_AGENT_TOKEN","requires":{"bins":[],"anyBins":["bash","sh","pwsh","powershell","curl"],"env":["CLAY_SANDBOX_URL","CLAY_AGENT_TOKEN","AGENT_TOKEN"],"configPaths":["skills/claw-wallet-test/.env.clay","skills/claw-wallet-test/identity.json"]},"env":[{"name":"CLAY_SANDBOX_URL","description":"Base URL for the local Claw Wallet sandbox HTTP server.","required":true,"sensitive":false},{"name":"CLAY_AGENT_TOKEN","description":"Primary bearer token used for authenticated sandbox API calls.","required":true,"sensitive":true},{"name":"AGENT_TOKEN","description":"Legacy alias for the same sandbox bearer token.","required":false,"sensitive":true}],"configPaths":[{"path":"skills/claw-wallet-test/.env.clay","description":"Local sandbox connection file containing CLAY_SANDBOX_URL plus CLAY_AGENT_TOKEN or AGENT_TOKEN.","required":true},{"path":"skills/claw-wallet-test/identity.json","description":"Local sandbox identity file containing agent_token and wallet identity metadata.","required":true}],"install":{"type":"bootstrap-script","targetPath":"skills/claw-wallet-test","sourceRepo":"https://test.clawwallet.cc/skills","homepage":"https://github.com/ClawWallet/Claw-Wallet-Skill","repository":"https://github.com/ClawWallet/Claw-Wallet-Skill","provenance":{"skillRepo":"https://github.com/ClawWallet/Claw-Wallet-Skill","binaryRepo":"https://github.com/ClawWallet/Claw_Wallet_Bin","distributionHost":"https://test.clawwallet.cc/skills","branch":"dev"},"commands":{"linux_macos":["mkdir -p skills/claw-wallet-test","cd skills/claw-wallet-test && curl -fsSL https://test.clawwallet.cc/skills/install.sh | bash"],"windows":["New-Item -ItemType Directory -Path \"skills\\\\claw-wallet-test\" -Force | Out-Null","Set-Location \"skills\\\\claw-wallet-test\"","Invoke-WebRequest -Uri \"https://test.clawwallet.cc/skills/install.ps1\" -OutFile \"install.ps1\" -UseBasicParsing","& \".\\\\install.ps1\""]}},"privilegePolicy":{"persistentWorkspaceWrites":true,"longLivedProcess":true,"allowedWriteScope":["skills/claw-wallet-test/**"],"requiresExplicitUserConfirmation":["reinstall","upgrade","uninstalling the wallet skill"],"notes":["Do not autonomously reinstall, upgrade, or uninstall the skill without user confirmation.","Persistent files are limited to the skill workspace under skills/claw-wallet-test.","First-time install and normal start/restart are allowed without extra confirmation."]}}}
 ---
 
 ## Use this skill when...
@@ -20,6 +21,18 @@ You can always know how-to-use by Swagger-UI at `{CLAY_SANDBOX_URL}/docs`
 # claw wallet skill
 
 This skill equips an OpenClaw agent with a local multi-chain wallet sandbox.
+
+## Registry metadata
+
+- Required local config files: `skills/claw-wallet-test/.env.clay` and `skills/claw-wallet-test/identity.json`
+- Required sandbox connection values: `CLAY_SANDBOX_URL` plus `CLAY_AGENT_TOKEN` or `AGENT_TOKEN`, read from those local files
+- Install method: bootstrap `install.sh` / `install.ps1` from `https://test.clawwallet.cc/skills` into `skills/claw-wallet-test`
+
+## Privilege safety rule
+
+- First-time install and normal `start` / `restart` do not require extra confirmation.
+- Reinstall, upgrade, uninstall, and transaction execution do require explicit user confirmation.
+- Limit writes to the skill workspace under `skills/claw-wallet-test/**`.
 
 1. All wallet-related operations must go through the local sandbox. Use the localhost API or sandbox CLI instead. Open `{CLAY_SANDBOX_URL}/docs` or use --help command. If sandbox is not running, start/restart it first.
 2. Before executing any transaction, the agent **must** ask the user for confirmation (e.g. "Confirm to execute this transaction?"). Do not proceed without explicit user consent.
@@ -60,6 +73,8 @@ Before downloading or running the installer, first check from the **workspace ro
 #### Bootstrap (curl install)
 
 Skill files are hosted at **`https://test.clawwallet.cc`**. Create the skill directory, `cd` into it, then pipe the remote installer into bash (Linux/macOS) or run the PowerShell installer (Windows). The installer downloads **`SKILL.md`**, **`claw-wallet.sh`** / **`claw-wallet`**, and the sandbox binary, then initializes the wallet.
+
+Do not run reinstall or upgrade automatically. First-time install is allowed without extra confirmation.
 
 Linux/macOS:
 
@@ -190,6 +205,8 @@ You can Open `{CLAY_SANDBOX_URL}/docs` to see the list of our API and how to use
 ### Upgrade
 
 Re-download **`SKILL.md`**, wrapper scripts, and the sandbox binary from **`CLAW_WALLET_BASE_URL`** (default `https://test.clawwallet.cc/skills`) by running **`upgrade`** on the wrapper. Wallet data (`.env.clay`, `identity.json`, `share3.json`) is preserved.
+
+Ask the user for confirmation before upgrade, because it rewrites files in `skills/claw-wallet-test/**` and may restart the sandbox environment.
 
 Linux/macOS: the wrapper runs `curl -fsSL …/skills/install.sh | bash` with `CLAW_WALLET_SKIP_INIT=1`. Windows: downloads and runs **`/skills/install.ps1`** from the same host.
 
