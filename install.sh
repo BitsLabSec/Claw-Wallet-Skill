@@ -40,10 +40,85 @@ fi
 
 BINARY_URL="${CLAW_WALLET_BASE_URL}/bin/${BINARY_NAME}"
 BINARY_TARGET="./clay-sandbox"
+PID_PATH="$SCRIPT_DIR/sandbox.pid"
+LOG_PATH="$SCRIPT_DIR/sandbox.log"
+ERR_LOG_PATH="$SCRIPT_DIR/sandbox_err.log"
+
+get_running_sandbox_pid() {
+    if [ ! -f "$PID_PATH" ]; then
+        return 1
+    fi
+    local pid_value
+    pid_value="$(head -n 1 "$PID_PATH" 2>/dev/null | tr -d '[:space:]' || true)"
+    if [ -z "$pid_value" ]; then
+        return 1
+    fi
+    if kill -0 "$pid_value" 2>/dev/null; then
+        printf '%s\n' "$pid_value"
+        return 0
+    fi
+    rm -f "$PID_PATH"
+    return 1
+}
+
+prepare_log_paths() {
+    local preferred_log="$LOG_PATH"
+    local preferred_err="$ERR_LOG_PATH"
+    local log_parent
+    log_parent="$(dirname "$preferred_log")"
+    mkdir -p "$log_parent" 2>/dev/null || true
+    rm -f "$preferred_log" "$preferred_err" 2>/dev/null || true
+    if : >"$preferred_log" 2>/dev/null && : >"$preferred_err" 2>/dev/null; then
+        return 0
+    fi
+
+    local fallback_dir="${TMPDIR:-/tmp}/claw-wallet"
+    mkdir -p "$fallback_dir"
+    LOG_PATH="$fallback_dir/sandbox.log"
+    ERR_LOG_PATH="$fallback_dir/sandbox_err.log"
+    : >"$LOG_PATH"
+    : >"$ERR_LOG_PATH"
+    echo "Warning: could not use $preferred_log; using fallback logs in $fallback_dir"
+}
+
+start_sandbox() {
+    local running_pid
+    if running_pid="$(get_running_sandbox_pid)"; then
+        echo "claw wallet sandbox is already running."
+        echo "PID file: $PID_PATH"
+        echo "Log files: $LOG_PATH , $ERR_LOG_PATH"
+        return 0
+    fi
+
+    prepare_log_paths
+    nohup "$BINARY_TARGET" serve >>"$LOG_PATH" 2>>"$ERR_LOG_PATH" &
+    local proc_pid=$!
+    echo "$proc_pid" >"$PID_PATH"
+    echo "claw wallet sandbox launched in the background."
+    echo "PID file: $PID_PATH"
+    echo "Log files: $LOG_PATH , $ERR_LOG_PATH"
+    if [ -f "$SCRIPT_DIR/.env.clay" ]; then
+        echo "API auth: if HTTP returns 401, send header Authorization: Bearer <token> using AGENT_TOKEN or CLAY_AGENT_TOKEN from .env.clay (or agent_token in identity.json). See SKILL.md."
+    fi
+}
+
+stop_sandbox() {
+    if [ -f "$PID_PATH" ]; then
+        local running_pid
+        running_pid="$(get_running_sandbox_pid || true)"
+        if [ -n "$running_pid" ]; then
+            kill "$running_pid" 2>/dev/null || true
+        fi
+    fi
+    if [ -x "$BINARY_TARGET" ]; then
+        "$BINARY_TARGET" stop >/dev/null 2>&1 || true
+    fi
+    rm -f "$PID_PATH"
+}
 
 # --- Common: stop, download, start ---
 if [ "${CLAW_WALLET_SKIP_STOP:-0}" != "1" ]; then
-    "$SCRIPT_DIR/claw-wallet.sh" stop >/dev/null 2>&1 || true
+    stop_sandbox
 fi
 
 echo "Downloading sandbox binary from $BINARY_URL ..."
@@ -53,7 +128,7 @@ mv -f "$TMP_TARGET" "$BINARY_TARGET"
 
 chmod +x "$BINARY_TARGET"
 
-"$SCRIPT_DIR/claw-wallet.sh" start
+start_sandbox
 
 # --- First-time only: wallet init (skipped when upgrade passes CLAW_WALLET_SKIP_INIT=1) ---
 read_env_value() {
