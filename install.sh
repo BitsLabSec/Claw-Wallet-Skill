@@ -74,21 +74,16 @@ do_wallet_init() {
     echo "Waiting for sandbox and initializing wallet ..."
     for i in $(seq 1 90); do
         CLAY_SANDBOX_URL=""
-        CLAY_AGENT_TOKEN=""
         if [ -f "$SCRIPT_DIR/.env.clay" ]; then
             CLAY_SANDBOX_URL="$(read_env_value '^CLAY_SANDBOX_URL=' "$SCRIPT_DIR/.env.clay")"
-            CLAY_AGENT_TOKEN="$(read_env_value '^(CLAY_AGENT_TOKEN|AGENT_TOKEN)=' "$SCRIPT_DIR/.env.clay")"
         fi
         if [ -z "${CLAY_SANDBOX_URL:-}" ]; then
             REASON=".env.clay (CLAY_SANDBOX_URL)"
         elif ! curl -s -f "${CLAY_SANDBOX_URL}/health" 2>/dev/null | grep -qE '"status"[[:space:]]*:[[:space:]]*"ok"'; then
             REASON="health ok at ${CLAY_SANDBOX_URL}"
-        elif [ -z "${CLAY_AGENT_TOKEN:-}" ]; then
-            REASON="CLAY_AGENT_TOKEN in .env.clay"
         else
             echo "  Calling wallet/init ..."
             if init_resp="$(curl -sS -f -X POST "${CLAY_SANDBOX_URL}/api/v1/wallet/init" \
-                -H "Authorization: Bearer ${CLAY_AGENT_TOKEN}" \
                 -H "Content-Type: application/json" \
                 -d '{}' 2>/dev/null)"; then
                 if printf '%s' "$init_resp" | grep -qE '"uid"|"status"'; then
@@ -112,7 +107,6 @@ if [ "${CLAW_WALLET_SKIP_INIT:-0}" != "1" ]; then
 fi
 
 # --- Common: final messages ---
-echo "Check .env.clay for CLAY_SANDBOX_URL and CLAY_AGENT_TOKEN (or AGENT_TOKEN)."
+echo "Check .env.clay for CLAY_SANDBOX_URL"
 echo "HTTP clients (curl, agents) must call protected APIs with: Authorization: Bearer <same token>."
-echo "The same value is duplicated in identity.json as agent_token. See SKILL.md section 'HTTP authentication (sandbox)'."
-echo "Sandbox binary refreshed at: $BINARY_TARGET"
+echo "Sandbox start success. at: $BINARY_TARGET"
