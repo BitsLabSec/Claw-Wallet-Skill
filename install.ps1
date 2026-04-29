@@ -3,10 +3,15 @@
 $ErrorActionPreference = "Stop"
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$LegacyUpgradeMode = $false
+$Command = if ($args.Count -gt 0) { $args[0].ToLowerInvariant() } else { "" }
+if ($env:CLAW_WALLET_INSTALL_DIR -and [string]::IsNullOrEmpty($Command)) {
+    $ScriptDir = $env:CLAW_WALLET_INSTALL_DIR
+    $LegacyUpgradeMode = $true
+}
 Set-Location -Path $ScriptDir
 
 $BaseUrl = if ($env:CLAW_WALLET_BASE_URL) { $env:CLAW_WALLET_BASE_URL } else { "https://test.clawwallet.cc" }
-$Command = if ($args.Count -gt 0) { $args[0].ToLowerInvariant() } else { "install" }
 
 $BinaryUrl = "$BaseUrl/bin/clay-sandbox-windows-amd64.exe"
 $BinaryPath = Join-Path $ScriptDir "clay-sandbox.exe"
@@ -219,6 +224,14 @@ function Uninstall-Skill {
 }
 
 switch ($Command) {
+    "" {
+        if ($LegacyUpgradeMode) {
+            Install-OrUpgrade -RunWalletInit $false
+        } else {
+            Install-OrUpgrade -RunWalletInit $true
+        }
+        break
+    }
     "install" {
         Install-OrUpgrade -RunWalletInit $true
         break

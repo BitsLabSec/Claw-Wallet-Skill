@@ -8,10 +8,17 @@ if [[ "${BASH_SOURCE[0]:-}" == "-" ]]; then
 else
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
+
+LEGACY_UPGRADE_MODE="0"
+COMMAND="${1:-}"
+if [[ -n "${CLAW_WALLET_INSTALL_DIR:-}" && -z "$COMMAND" ]]; then
+    SCRIPT_DIR="$CLAW_WALLET_INSTALL_DIR"
+    LEGACY_UPGRADE_MODE="1"
+fi
+
 cd "$SCRIPT_DIR"
 
 CLAW_WALLET_BASE_URL="${CLAW_WALLET_BASE_URL:-https://test.clawwallet.cc}"
-COMMAND="${1:-install}"
 
 OS_TYPE="$(uname -s | tr '[:upper:]' '[:lower:]')"
 ARCH_TYPE="$(uname -m)"
@@ -236,7 +243,14 @@ uninstall_skill() {
 }
 
 case "$COMMAND" in
-    ""|install)
+    "")
+        if [[ "$LEGACY_UPGRADE_MODE" == "1" ]]; then
+            install_or_upgrade 0
+        else
+            install_or_upgrade 1
+        fi
+        ;;
+    install)
         install_or_upgrade 1
         ;;
     upgrade)
