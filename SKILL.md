@@ -12,6 +12,8 @@ Use this skill when the user wants to sign messages, sign transactions, or trans
 
 Use this skill when the user wants to interact with supported DeFi flows such as swap.
 
+Use this skill when the user asks about x402 payment, gas sponsorship, or paying gas with USDC during managed transfer/swap/invoke flows.
+
 Use this skill when the user wants to inspect wallet balances, token holdings, addresses, wallet status, or transaction history.
 
 Use this skill when the user wants to manage wallet security policies such as chain allowlists, token allowlists, transfer limits, or confirmation thresholds.
@@ -222,6 +224,14 @@ When `AGENT_TOKEN` is set, authenticated requests require:
 When `AGENT_TOKEN` is empty in local dev mode, the sandbox allows the same requests without an `Authorization` header.
 
 Use the token value from `.env.clay` or `identity.json` as described in **HTTP authentication (sandbox)** above.
+
+## x402 payment notes
+
+- Current sandbox behavior includes x402-style gas sponsorship logic in managed execution flows.
+- The x402 flow is internal to managed handlers (transfer/swap/invoke) and is not exposed as a standalone public API route.
+- Agents should trigger managed APIs (for example transfer/swap/invoke) and let sandbox decide whether sponsorship is needed.
+- For EVM permit-style flows where the user already has native gas, sandbox may bypass x402 sponsorship and broadcast normally.
+- Always ask for explicit user confirmation before any transaction execution, including flows that may use sponsorship.
 
 You can Open `{CLAY_SANDBOX_URL}/docs` to see the list of our API and how to use.
 

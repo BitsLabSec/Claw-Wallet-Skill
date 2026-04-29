@@ -18,7 +18,8 @@ description: >
   or wrapper scripts, and guides the user through wallet bind and claim flows. Use when:
   installing Claw Wallet, starting or restarting the local sandbox, reading wallet
   addresses or uid, binding a wallet, signing transactions, transferring assets, or
-  managing wallet security policies through the sandbox.
+  managing wallet security policies through the sandbox, and handling x402-style gas
+  sponsorship in managed transaction flows.
 
 
 permissions:
