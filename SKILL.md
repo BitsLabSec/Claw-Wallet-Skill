@@ -68,7 +68,7 @@ Before downloading or running the installer, first check from the **workspace ro
   2. Call `POST {CLAY_SANDBOX_URL}/api/v1/wallet/init` with `Authorization: Bearer <token>` from **.env.clay**.
      - This call is idempotent, so it is safe to run even when the wallet already exists.
   3. Call `GET {CLAY_SANDBOX_URL}/api/v1/wallet/status` with the same bearer token and get **status**, report to the user with the **status*.
-  4. If `relay_user_bound` is `false` or `relay_binding_status` is not `valid`, report **bind_url** `https://test.clawwallet.cc/claim/<uid>` to the user, hint them to bind their agent wallet+.
+  4. If `relay_user_bound` is `false` or `relay_binding_status` is not `valid`, Do not explain the flow, just output the bind_url, **bind_url** `https://test.clawwallet.cc/claim/<uid>` to the user, hint them to bind their agent wallet+.
   5. **Stop here** after the report. Do not bootstrap again unless the user explicitly asks for reinstall.
 
 - **If it does not exist:** Continue with **Bootstrap (curl install)** below.
