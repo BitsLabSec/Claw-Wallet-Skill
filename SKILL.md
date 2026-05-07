@@ -1,7 +1,7 @@
 ---
 name: claw-wallet
 description: "A multi-chain wallet skill for AI agents, with local sandbox signing, secure PIN handling, and configurable risk controls."
-metadata: {"openclaw":{"always":false,"autonomousInvocation":false,"modelInvocation":{"default":"require-user-confirmation","reason":"Reinstall, upgrade, uninstall, and transaction execution require explicit user confirmation."},"homepage":"https://github.com/ClawWallet/Claw-Wallet-Skill","repository":"https://github.com/ClawWallet/Claw-Wallet-Skill","upstream":{"skillRepo":"https://github.com/ClawWallet/Claw-Wallet-Skill","binaryRepo":"https://github.com/ClawWallet/Claw_Wallet_Bin","distributionHost":"https://test.clawwallet.cc/skills","distributionBase":"https://test.clawwallet.cc","branch":"dev","hosts":["github.com","test.clawwallet.cc"],"reviewNotes":["This repository contains the skill source and wrapper scripts.","Claw_Wallet_Bin contains the sandbox binaries referenced by the installer.","test.clawwallet.cc distributes the published installer, wrappers, and binaries for the dev environment."]},"os":["darwin","linux","win32"],"primaryEnv":"CLAY_AGENT_TOKEN","requires":{"bins":[],"anyBins":["bash","sh","pwsh","powershell","curl"],"env":["CLAY_SANDBOX_URL","CLAY_AGENT_TOKEN","AGENT_TOKEN"],"configPaths":["skills/claw-wallet-test/.env.clay","skills/claw-wallet-test/identity.json"]},"env":[{"name":"CLAY_SANDBOX_URL","description":"Base URL for the local Claw Wallet sandbox HTTP server.","required":true,"sensitive":false},{"name":"CLAY_AGENT_TOKEN","description":"Primary bearer token used for authenticated sandbox API calls.","required":true,"sensitive":true},{"name":"AGENT_TOKEN","description":"Legacy alias for the same sandbox bearer token.","required":false,"sensitive":true}],"configPaths":[{"path":"skills/claw-wallet-test/.env.clay","description":"Local sandbox connection file containing CLAY_SANDBOX_URL plus CLAY_AGENT_TOKEN or AGENT_TOKEN.","required":true},{"path":"skills/claw-wallet-test/identity.json","description":"Local sandbox identity file containing agent_token and wallet identity metadata.","required":true}],"install":{"type":"bootstrap-script","targetPath":"skills/claw-wallet-test","sourceRepo":"https://test.clawwallet.cc/skills","homepage":"https://github.com/ClawWallet/Claw-Wallet-Skill","repository":"https://github.com/ClawWallet/Claw-Wallet-Skill","provenance":{"skillRepo":"https://github.com/ClawWallet/Claw-Wallet-Skill","binaryRepo":"https://github.com/ClawWallet/Claw_Wallet_Bin","distributionHost":"https://test.clawwallet.cc/skills","branch":"dev"},"commands":{"linux_macos":["mkdir -p skills/claw-wallet-test","cd skills/claw-wallet-test && curl -fsSL https://test.clawwallet.cc/skills/install.sh | bash"],"windows":["New-Item -ItemType Directory -Path \"skills\\\\claw-wallet-test\" -Force | Out-Null","Set-Location \"skills\\\\claw-wallet-test\"","Invoke-WebRequest -Uri \"https://test.clawwallet.cc/skills/install.ps1\" -OutFile \"install.ps1\" -UseBasicParsing","& \".\\\\install.ps1\""]}},"privilegePolicy":{"persistentWorkspaceWrites":true,"longLivedProcess":true,"allowedWriteScope":["skills/claw-wallet-test/**"],"requiresExplicitUserConfirmation":["reinstall","upgrade","uninstalling the wallet skill"],"notes":["Do not autonomously reinstall, upgrade, or uninstall the skill without user confirmation.","Persistent files are limited to the skill workspace under skills/claw-wallet-test.","First-time install and normal start/restart are allowed without extra confirmation."]}}}
+metadata: {"openclaw":{"always":false,"autonomousInvocation":false,"modelInvocation":{"default":"require-user-confirmation","reason":"Reinstall, upgrade, uninstall, and transaction execution require explicit user confirmation."},"homepage":"https://github.com/ClawWallet/Claw-Wallet-Skill","repository":"https://github.com/ClawWallet/Claw-Wallet-Skill","upstream":{"skillRepo":"https://github.com/ClawWallet/Claw-Wallet-Skill","binaryRepo":"https://github.com/ClawWallet/Claw_Wallet_Bin","distributionHost":"https://test.clawwallet.cc/skills","distributionBase":"https://test.clawwallet.cc","branch":"dev","hosts":["github.com","test.clawwallet.cc"],"reviewNotes":["This repository contains the skill source and wrapper scripts.","Claw_Wallet_Bin contains the sandbox binaries referenced by the installer.","test.clawwallet.cc distributes the published installer, wrappers, and binaries for the dev environment."]},"os":["darwin","linux","win32"],"primaryEnv":"AGENT_TOKEN","requires":{"bins":[],"anyBins":["bash","sh","pwsh","powershell","curl"],"env":["CLAY_SANDBOX_URL","AGENT_TOKEN"],"configPaths":["skills/claw-wallet-test/.env.clay","skills/claw-wallet-test/identity.json"]},"env":[{"name":"CLAY_SANDBOX_URL","description":"Base URL for the local Claw Wallet sandbox HTTP server.","required":true,"sensitive":false},{"name":"AGENT_TOKEN","description":"Bearer token for sandbox API calls when set. It may be empty; only send Authorization when it has a value.","required":false,"sensitive":true}],"configPaths":[{"path":"skills/claw-wallet-test/.env.clay","description":"Local sandbox connection file containing CLAY_SANDBOX_URL and AGENT_TOKEN.","required":true},{"path":"skills/claw-wallet-test/identity.json","description":"Local sandbox identity file containing agent_token and wallet identity metadata.","required":true}],"install":{"type":"bootstrap-script","targetPath":"skills/claw-wallet-test","sourceRepo":"https://test.clawwallet.cc/skills","homepage":"https://github.com/ClawWallet/Claw-Wallet-Skill","repository":"https://github.com/ClawWallet/Claw-Wallet-Skill","provenance":{"skillRepo":"https://github.com/ClawWallet/Claw-Wallet-Skill","binaryRepo":"https://github.com/ClawWallet/Claw_Wallet_Bin","distributionHost":"https://test.clawwallet.cc/skills","branch":"dev"},"commands":{"linux_macos":["mkdir -p skills/claw-wallet-test","cd skills/claw-wallet-test && curl -fsSL https://test.clawwallet.cc/skills/install.sh | bash"],"windows":["New-Item -ItemType Directory -Path \"skills\\\\claw-wallet-test\" -Force | Out-Null","Set-Location \"skills\\\\claw-wallet-test\"","Invoke-WebRequest -Uri \"https://test.clawwallet.cc/skills/install.ps1\" -OutFile \"install.ps1\" -UseBasicParsing","& \".\\\\install.ps1\""]}},"privilegePolicy":{"persistentWorkspaceWrites":true,"longLivedProcess":true,"allowedWriteScope":["skills/claw-wallet-test/**"],"requiresExplicitUserConfirmation":["reinstall","upgrade","uninstalling the wallet skill"],"notes":["Do not autonomously reinstall, upgrade, or uninstall the skill without user confirmation.","Persistent files are limited to the skill workspace under skills/claw-wallet-test.","First-time install and normal start/restart are allowed without extra confirmation."]}}}
 ---
 
 ## Use this skill when...
@@ -18,7 +18,7 @@ Use this skill when the user wants to manage wallet security policies such as ch
 
 Use this skill when the user wants to turn a completed DeFi sequence into a reusable SDK-backed script or a common workflow template.
 
-You can always know how-to-use by Swagger-UI at `{CLAY_SANDBOX_URL}/docs`
+Always learn the current sandbox API from Swagger UI at `{CLAY_SANDBOX_URL}/docs`.
 
 # claw wallet skill
 
@@ -27,7 +27,7 @@ This skill equips an OpenClaw agent with a local multi-chain wallet sandbox.
 ## Registry metadata
 
 - Required local config files: `skills/claw-wallet-test/.env.clay` and `skills/claw-wallet-test/identity.json`
-- Required sandbox connection values: `CLAY_SANDBOX_URL` plus `CLAY_AGENT_TOKEN` or `AGENT_TOKEN`, read from those local files
+- Required sandbox connection values: `CLAY_SANDBOX_URL` plus optional `AGENT_TOKEN`, read from those local files
 - Install method: bootstrap `install.sh` / `install.ps1` from `https://test.clawwallet.cc/skills` into `skills/claw-wallet-test`
 - Companion skills to load together when present: `claw-wallet-basic`, `wallet-chain-explorer`, `claw-wallet-defi-scripts`
 
@@ -37,8 +37,9 @@ This skill equips an OpenClaw agent with a local multi-chain wallet sandbox.
 - Reinstall, upgrade, uninstall, and transaction execution do require explicit user confirmation.
 - Limit writes to the skill workspace under `skills/claw-wallet-test/**`.
 
-1. All wallet-related operations must go through the local sandbox. Use the localhost API or sandbox CLI instead. Open `{CLAY_SANDBOX_URL}/docs` or use --help command. If sandbox is not running, start/restart it first.
+1. All wallet-related operations must go through the local sandbox. Use the localhost API or sandbox CLI instead. Open `{CLAY_SANDBOX_URL}/docs`. If sandbox is not running, start/restart it first.
 2. Before executing any transaction, the agent **must** ask the user for confirmation (e.g. "Confirm to execute this transaction?"). Do not proceed without explicit user consent.
+3. Before using a concrete sandbox feature, open `{CLAY_SANDBOX_URL}/docs`, read the relevant endpoint, request schema, field names, field meanings, and response notes, then call the API exactly as documented. Do not invent field names or overthink parameters beyond what the docs require.
 
 ## Bootstrap
 
@@ -100,7 +101,7 @@ Optional: override the download host with environment variable **`CLAW_WALLET_BA
 
 After the installer finishes, immediately run the status disclosure flow and emit the fixed disclosure format below.
 
-After install, use `GET {CLAY_SANDBOX_URL}/api/v1/wallet/status` with `Authorization: Bearer <token>` — confirm wallet is ready. The response includes **address information** and **uid** (when present). **You must show the user:** **wallet addresses** (from the response), **uid** (from the response when present) ( HTTP API under `/api/v1/...`, Swagger at `/docs`, same origin).  read it only from `.env.clay` / `identity.json` for `Authorization` (see **HTTP authentication (sandbox)** below).
+After install, use `GET {CLAY_SANDBOX_URL}/api/v1/wallet/status` with the Authorization rule from **HTTP authentication (sandbox)** below and confirm wallet is ready. The response includes **address information** and **uid** (when present). **You must show the user:** **wallet addresses** (from the response), **uid** (from the response when present) (HTTP API under `/api/v1/...`, Swagger at `/docs`, same origin).
 
 Use this **exact format** to respond to the user after finishing the install:
 
@@ -146,12 +147,12 @@ Use this **exact format** to respond to the user after finishing the install:
 
 **Agents (automating bind after the user starts the flow):** The user will obtain a **`message_hash_hex`** from the Claw bind / challenge step and paste or send it to you. You must call the **sandbox** bind API with the same bearer token used for all authenticated sandbox requests.
 
-1. **Token:** Use **`AGENT_TOKEN`** / **`CLAY_AGENT_TOKEN`** from `skills/claw-wallet-test/.env.clay` (or `agent_token` in `identity.json`). Send it as:
-   - `Authorization: Bearer <token>`
+1. **Token:** Use **`AGENT_TOKEN`** from `skills/claw-wallet-test/.env.clay` (or `agent_token` in `identity.json`). If it has a value, send it as:
+   - `Authorization: Bearer <AGENT_TOKEN>`
 2. **Request:**
    - **Method:** `POST`
    - **URL:** `{CLAY_SANDBOX_URL}/api/v1/wallet/bind`
-   - **Headers:** `Content-Type: application/json`, plus `Authorization` above
+   - **Headers:** `Content-Type: application/json`, plus `Authorization` only when `AGENT_TOKEN` has a value
    - **Body (JSON):** `{ "message_hash_hex": "<value from user>" }`
 3. **Behavior:** The sandbox signs locally and forwards the result to the relay
 
@@ -160,7 +161,7 @@ Use this **exact format** to respond to the user after finishing the install:
 ```bash
 curl -sS -X POST "${CLAY_SANDBOX_URL}/api/v1/wallet/bind" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${AGENT_TOKEN}" \
+  ${AGENT_TOKEN:+-H "Authorization: Bearer ${AGENT_TOKEN}"} \
   -d "{\"message_hash_hex\":\"<hex from user>\"}"
 ```
 
@@ -173,7 +174,7 @@ curl -sS -X POST "${CLAY_SANDBOX_URL}/api/v1/wallet/bind" \
 $body = @{ message_hash_hex = "<hex from user>" } | ConvertTo-Json
 Invoke-RestMethod -Method Post -Uri "$env:CLAY_SANDBOX_URL/api/v1/wallet/bind" `
   -ContentType "application/json" `
-  -Headers @{ Authorization = "Bearer $env:AGENT_TOKEN" } `
+  -Headers $(if ($env:AGENT_TOKEN) { @{ Authorization = "Bearer $env:AGENT_TOKEN" } } else { @{} }) `
   -Body $body
 ```
 
@@ -186,16 +187,16 @@ After install or relaunch, verify:
 
 ## HTTP authentication (sandbox)
 
-- **Most** routes under `/api/v1/...` (wallet status, sign, transfer, etc.) require:
-  - `Authorization: Bearer <token>`
-  - where `<token>` is **exactly** the same value as `AGENT_TOKEN` / `CLAY_AGENT_TOKEN`.
-- **Typical failure without the header:** HTTP **401** with body `Unauthorized: invalid claw wallet sandbox token`.
+- When `AGENT_TOKEN` has a value, send it on protected `/api/v1/...` requests:
+  - `Authorization: Bearer <AGENT_TOKEN>`
+- When `AGENT_TOKEN` is empty, omit the Authorization header. This is allowed sandbox behavior.
+- **Typical failure with a wrong token:** HTTP **401** with body `Unauthorized: invalid claw wallet sandbox token`.
 
 ### Where to read the token (same secret, duplicated for convenience)
 
 | Location | Field(s) |
 |----------|-----------|
-| `skills/claw-wallet-test/.env.clay` | **`CLAY_SANDBOX_URL`** — base URL (scheme, host, port) for the sandbox HTTP server (API `/api/v1/...`, `/docs`). Also `CLAY_AGENT_TOKEN` or `AGENT_TOKEN` (same value; installer/bootstrap writes both). |
+| `skills/claw-wallet-test/.env.clay` | **`CLAY_SANDBOX_URL`** — base URL (scheme, host, port) for the sandbox HTTP server (API `/api/v1/...`, `/docs`). Also **`AGENT_TOKEN`** when the user has set one. |
 | `skills/claw-wallet-test/identity.json` | `agent_token` |
 
 Example workspace test layout (same idea):
@@ -205,7 +206,9 @@ Example workspace test layout (same idea):
 
 ### Swagger UI (`/docs`)
 
-We have a list of sandbox API at `{CLAY_SANDBOX_URL}/docs`,
+All available sandbox features are shown in Swagger UI at `{CLAY_SANDBOX_URL}/docs`. Read this page before using a specific feature. 
+
+When a request needs fields, use the exact field names and meanings from the endpoint schema. For example, if the schema says `amount_wei`, send `amount_wei`; do not rename it to `amount`, `value`, or another inferred name unless the docs for that endpoint say so.
 
 ### Unauthenticated or special paths (examples)
 
@@ -215,15 +218,9 @@ We have a list of sandbox API at `{CLAY_SANDBOX_URL}/docs`,
 
 ## Primary wallet API
 
-When `AGENT_TOKEN` is set, authenticated requests require:
-
-`Authorization: Bearer <CLAY_AGENT_TOKEN>`
-
-When `AGENT_TOKEN` is empty in local dev mode, the sandbox allows the same requests without an `Authorization` header.
-
 Use the token value from `.env.clay` or `identity.json` as described in **HTTP authentication (sandbox)** above.
 
-You can Open `{CLAY_SANDBOX_URL}/docs` to see the list of our API and how to use.
+Open `{CLAY_SANDBOX_URL}/docs` to see every available API and how to use it.
 
 ## Upgrade and Uninstall
 
@@ -320,7 +317,7 @@ Help and usage:
 - `help`, `-h`, and `--help` are equivalent for the sandbox binary
 - These flags print the built-in CLI usage text from the binary itself, not an install-script-specific summary
 - The help output is grouped by area: server, wallet read commands, policy, transaction helpers, and local bootstrap / utility commands
-- Wallet read commands are thin wrappers over the local HTTP API and still require the bearer token from `.env.clay` / `identity.json`
+- Wallet read commands are thin wrappers over the local HTTP API and use `AGENT_TOKEN` from `.env.clay` / `identity.json` when it has a value
 - Running the binary with no subcommand starts the HTTP server, so use `help` explicitly when you want usage text instead of a foreground daemon
 
 
