@@ -31,7 +31,7 @@ This skill equips an OpenClaw agent with a local multi-chain wallet sandbox.
 - Required local config files: `skills/claw-wallet/.env.clay` and `skills/claw-wallet/identity.json`
 - Required sandbox connection values: `CLAY_SANDBOX_URL` plus `CLAY_AGENT_TOKEN` or `AGENT_TOKEN`, read from those local files
 - Install method: bootstrap `install.sh` / `install.ps1` from `https://www.clawwallet.cc/skills` into `skills/claw-wallet`
-- Companion skills to load together when present: `claw-wallet-basic`, `wallet-chain-explorer`, `claw-wallet-defi-scripts`, `claw-wallet-swap`, `claw-wallet-bridge`
+- Companion skills to load together when present: `claw-wallet-basic`, `wallet-chain-explorer`, `claw-wallet-defi-scripts`, `claw-wallet-swap`, `claw-wallet-bridge`, `claw-wallet-pay-with-x402`
 
 ## Privilege safety rule
 
