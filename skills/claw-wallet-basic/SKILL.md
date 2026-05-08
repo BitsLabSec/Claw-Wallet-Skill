@@ -1,5 +1,5 @@
 ---
-name: claw-wallet
+name: claw-wallet-basic
 description: "A multi-chain wallet skill for AI agents, with local sandbox signing, secure PIN handling, and configurable risk controls."
 ---
 
