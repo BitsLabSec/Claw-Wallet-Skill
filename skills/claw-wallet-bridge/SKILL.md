@@ -1,8 +1,6 @@
 ---
 name: claw-wallet-bridge
 description: "Cross-chain bridge skill for AI agents using LI.FI, enabling seamless asset transfers between 20+ chains including EVM, Solana, and Sui."
-short_description: "Multi-chain asset bridge using LI.FI."
-default_prompt: "Use $skill-name to quote and execute cross-chain asset transfers between different networks like Ethereum, BSC, Solana, and Sui."
 ---
 
 ## Use this skill when...

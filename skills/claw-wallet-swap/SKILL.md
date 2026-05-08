@@ -1,8 +1,6 @@
 ---
 name: claw-wallet-swap
 description: "Same-chain asset swap skill for AI agents, enabling seamless token exchanges on EVM chains, Solana, and Sui using aggregated liquidity from Uniswap, 0x, OKX, Jupiter, and Cetus."
-short_description: "Multi-chain same-chain asset swap."
-default_prompt: "Use $skill-name to execute asset swaps on the same blockchain network, such as Ethereum, BSC, Solana, or Sui."
 ---
 
 ## Use this skill when...
