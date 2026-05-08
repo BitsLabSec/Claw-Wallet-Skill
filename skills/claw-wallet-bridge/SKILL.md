@@ -34,7 +34,7 @@ All endpoints are under `/api/v1/tx/bridge/lifi/`.
 ### 1. Token Verification
 Query supported tokens for specific chains to find exact contract addresses.
 - **Endpoint**: `GET /api/v1/tx/bridge/lifi/tokens?chains={chainIDs}`
-- **Parameters**: `chains` (comma-separated IDs, e.g., "1,56,1151111081099710").
+- **Parameters**: `chains` (comma-separated IDs, e.g., "1,56,1151111081099710, 9270000000000000").
 
 ### 2. Bridge Quote
 Estimate cross-chain swap details.
