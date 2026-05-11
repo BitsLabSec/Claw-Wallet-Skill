@@ -1,5 +1,5 @@
 # claw wallet unified installer and runtime entrypoint for Windows (PowerShell)
-# Served at: https://test.clawwallet.cc/skills/install.ps1
+# Served at: https://www.clawwallet.cc/skills/install.ps1
 $ErrorActionPreference = "Stop"
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -11,7 +11,7 @@ if ($env:CLAW_WALLET_INSTALL_DIR -and [string]::IsNullOrEmpty($Command)) {
 }
 Set-Location -Path $ScriptDir
 
-$BaseUrl = "https://test.clawwallet.cc"
+$BaseUrl = "https://www.clawwallet.cc"
 
 $BinaryUrl = "$BaseUrl/bin/clay-sandbox-windows-amd64.exe"
 $BinaryPath = Join-Path $ScriptDir "clay-sandbox.exe"

@@ -1,6 +1,6 @@
 #!/bin/bash
 # claw wallet unified installer and runtime entrypoint for Linux/macOS
-# Served at: https://test.clawwallet.cc/skills/install.sh
+# Served at: https://www.clawwallet.cc/skills/install.sh
 set -euo pipefail
 
 if [[ "${BASH_SOURCE[0]:-}" == "-" ]]; then
@@ -18,7 +18,7 @@ fi
 
 cd "$SCRIPT_DIR"
 
-CLAW_WALLET_BASE_URL="https://test.clawwallet.cc"
+CLAW_WALLET_BASE_URL="https://www.clawwallet.cc"
 
 OS_TYPE="$(uname -s | tr '[:upper:]' '[:lower:]')"
 ARCH_TYPE="$(uname -m)"

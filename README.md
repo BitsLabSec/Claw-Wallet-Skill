@@ -17,24 +17,24 @@ This is a community marketplace setup, not an Anthropic-curated listing. To appe
 
 ## Installation
 
-Skill assets are hosted at **`https://test.clawwallet.cc`**. Deploy that site so these paths exist: **`/skills/install.sh`**, **`/skills/install.ps1`**, **`/skills/SKILL.md`**, **`/skills/claw-wallet.sh`**, **`/skills/claw-wallet`**, **`/skills/claw-wallet.ps1`**, **`/skills/claw-wallet.cmd`**, and **`/bin/<platform binary>`**.
+Skill assets are hosted at **`https://www.clawwallet.cc`**. Deploy that site so these paths exist: **`/skills/install.sh`**, **`/skills/install.ps1`**, **`/skills/SKILL.md`**, **`/skills/claw-wallet.sh`**, **`/skills/claw-wallet`**, **`/skills/claw-wallet.ps1`**, **`/skills/claw-wallet.cmd`**, and **`/bin/<platform binary>`**.
 
 ### Linux / macOS (recommended)
 
 From the workspace root:
 
 ```bash
-mkdir -p skills/claw-wallet-test
-cd skills/claw-wallet-test
-curl -fsSL https://test.clawwallet.cc/skills/install.sh | bash
+mkdir -p skills/claw-wallet
+cd skills/claw-wallet
+curl -fsSL https://www.clawwallet.cc/skills/install.sh | bash
 ```
 
 ### Windows PowerShell
 
 ```powershell
-New-Item -ItemType Directory -Path "skills\claw-wallet-test" -Force | Out-Null
-Set-Location "skills\claw-wallet-test"
-Invoke-WebRequest -Uri "https://test.clawwallet.cc/install.ps1" -OutFile "install.ps1" -UseBasicParsing
+New-Item -ItemType Directory -Path "skills\claw-wallet" -Force | Out-Null
+Set-Location "skills\claw-wallet"
+Invoke-WebRequest -Uri "https://www.clawwallet.cc/install.ps1" -OutFile "install.ps1" -UseBasicParsing
 & ".\install.ps1"
 ```
 
@@ -63,7 +63,7 @@ Verify status:
 - `GET {CLAY_SANDBOX_URL}/health` — expected: `{"status": "ok"}`
 - `GET {CLAY_SANDBOX_URL}/api/v1/wallet/status` with `Authorization: Bearer <token>` when a token is present; if `AGENT_TOKEN` is empty, local dev mode allows the request without the header — confirm wallet is ready
 
-Token and URL are in `skills/claw-wallet-test/.env.clay`.
+Token and URL are in `skills/claw-wallet/.env.clay`.
 
 ## Documentation
 
